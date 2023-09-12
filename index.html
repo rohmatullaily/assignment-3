@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+    <!-- Include Tailwind CSS stylesheet -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-gray-200 flex items-center justify-center h-screen">
+    <div class="max-w-md w-full bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-2xl font-semibold mb-4 text-center">Join the Chat</h2>
+      <form id="registration-form" class="space-y-4">
+        <div class="relative">
+          <input
+            type="text"
+            id="name"
+            placeholder="Your name ..."
+            class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring focus:border-blue-500"
+          />
+        </div>
+        <button
+          id="button"
+          class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none"
+        >
+          Join Chat
+        </button>
+      </form>
+    </div>
+
+    <script>
+      const registrationForm = document.getElementById("registration-form");
+      const button = document.getElementById("button");
+
+      registrationForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("name").value;
+        localStorage.setItem("name", name);
+        window.location.href = "/chat";
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>WebSocket</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .circular-avatar {
+        width: 40px;
+        height: 40px;
+        background-color: #069668;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        font-size: 20px;
+      }
+
+      .message-box {
+        max-width: 70%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+      }
+
+      .user-message-box {
+        background-color: #069668;
+        color: white;
+        margin-left: auto;
+      }
+
+      .other-message-box {
+        background-color: #e5e7eb;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <div class="container mx-auto p-4 max-w-md">
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <div class="flex items-center justify-end mb-4 border-b pb-2">
+          <div class="flex items-center">
+            <div class="circular-avatar text-white mr-2">
+              <span id="userIcon"></span>
+            </div>
+            <h2 class="text-2xl font-semibold" id="headerName"></h2>
+          </div>
+        </div>
+
+        <div id="output" class="mt-4"></div>
+
+        <input
+          type="text"
+          id="message"
+          placeholder="Your message..."
+          class="border border-gray-300 rounded px-3 py-2 w-full mb-2 focus:outline-none text-sm"
+        />
+
+        <button
+          id="send"
+          class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 text-sm focus:outline-none"
+        >
+          Send
+        </button>
+      </div>
+    </div>
+
+    <script>
+      var loc = window.location;
+      var uri = "ws:";
+      const name = localStorage.getItem("name");
+
+      if (loc.protocol === "https:") {
+        uri = "wss:";
+      }
+      uri += "//" + loc.host;
+      uri += loc.pathname + "/ws?name=" + name;
+
+      ws = new WebSocket(uri);
+
+      ws.onopen = function () {
+        console.log("Connected");
+      };
+
+      function main() {
+        const name = localStorage.getItem("name");
+        document.getElementById("headerName").textContent = name;
+        document.getElementById("userIcon").textContent = name
+          .charAt(0)
+          .toUpperCase();
+      }
+
+      main();
+
+      ws.onmessage = function (evt) {
+        const data = JSON.parse(evt.data);
+        console.log(data);
+        if (data.type == 0) {
+          renderNotification(data.message);
+        } else {
+          renderMessage(data.name, data.message);
+        }
+      };
+
+      function renderMessage(name, message) {
+        var out = document.getElementById("output");
+        const currentName = document.getElementById("headerName").textContent;
+        const messageClass =
+          name === currentName ? "user-message-box" : "other-message-box";
+        out.innerHTML += `<div class="message-box ${messageClass}">${name} : ${message}</div>`;
+        out.innerHTML += "<br/>";
+      }
+
+      function renderNotification(notification) {
+        var out = document.getElementById("output");
+        out.innerHTML += `<div>${notification}</div>`;
+        out.innerHTML += "<br/>";
+      }
+
+      const sendButton = document.getElementById("send");
+      sendButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        const input = document.getElementById("message");
+        const name = document.getElementById("headerName").textContent;
+
+        const data = {
+          message: input.value,
+          name: name,
+        };
+
+        ws.send(JSON.stringify(data));
+        input.value = "";
+      });
+    </script>
+  </body>
+</html>
