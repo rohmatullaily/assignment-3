@@ -1,5 +1,3 @@
-<img width="1680" alt="Screen Shot 2023-09-12 at 10 47 49" src="https://github.com/rohmatullaily/assignment-3/assets/31227217/2a9237e9-0662-4088-af0d-cde6475fa957"># WebSocket Chat Application
-
 This is a simple WebSocket chat application built in Go. It allows users to join chat rooms, exchange messages in real-time, and receive notifications when other users join or leave the chat.
 
 ## Features
